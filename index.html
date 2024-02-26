@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Make Notes</title>
+    <!-- save local storage -->
+    <script>
+      function getValues() {
+        var title = document.getElementById("title").value;
+        var note = document.getElementById("note").value;
+
+        return [title, note];
+      }
+
+      function Empty() {
+        document.getElementById("title").value = "";
+        document.getElementById("note").value = "";
+      }
+
+      function save() {
+        var [title, note] = getValues();
+        var newNote = note.replace(/\n/g, "<br>");
+        localStorage.setItem(title, newNote);
+        Empty();
+        show();
+      }
+
+      function show() {
+        var notes = document.getElementById("notes");
+        notes.innerHTML = "";
+        for (var i = 0; i < localStorage.length; i++) {
+          var title = localStorage.key(i);
+          var note = localStorage.getItem(title);
+          notes.innerHTML +=
+            "<div class='bg-gray-200 max-w-sm rounded shadow-lg'><div class='px-6 py-4'><div class='font-bold text-xl mb-2'>" +
+            title +
+            "</div><p class='text-gray-700 text-base'>" +
+            note +
+            "</p></div></div>";
+        }
+      }
+
+      function remove() {
+        var [title, note] = getValues();
+        localStorage.removeItem(title);
+        Empty();
+        show();
+      }
+
+      function clearAll() {
+        localStorage.clear();
+        show();
+      }
+
+      function showAll() {
+        show();
+      }
+
+      function edit() {
+        var [title, note] = getValues();
+        var note = localStorage.getItem(title);
+        document.getElementById("note").value = note;
+      }
+
+      function styleMethod() {
+        var note = document.getElementById("note");
+        var selectedText = note.value.substring(
+          note.selectionStart,
+          note.selectionEnd
+        );
+        var before = note.value.substring(0, note.selectionStart);
+        var after = note.value.substring(note.selectionEnd, note.value.length);
+
+        return [selectedText, before, after];
+      }
+
+      function makeBold() {
+        var note = document.getElementById("note");
+        var [selectedText, before, after] = styleMethod();
+        note.value = before + "<b>" + selectedText + "</b>" + after;
+      }
+
+      function makeItalic() {
+        var note = document.getElementById("note");
+        var [selectedText, before, after] = styleMethod();
+        note.value = before + "<i>" + selectedText + "</i>" + after;
+      }
+
+      function makeUnderline() {
+        var note = document.getElementById("note");
+        var [selectedText, before, after] = styleMethod();
+        note.value = before + "<u>" + selectedText + "</u>" + after;
+      }
+
+      function makeStrike() {
+        var note = document.getElementById("note");
+        var [selectedText, before, after] = styleMethod();
+        note.value = before + "<strike>" + selectedText + "</strike>" + after;
+      }
+
+      function makeCode() {
+        var note = document.getElementById("note");
+        var [selectedText, before, after] = styleMethod();
+        note.value = before + "<code>" + selectedText + "</code>" + after;
+      }
+
+      function makeColor() {
+        var note = document.getElementById("note");
+        var [selectedText, before, after] = styleMethod();
+        var selectedColor = document.getElementById("color").value;
+        note.value =
+          before +
+          "<span style='color:" +
+          selectedColor +
+          "'>" +
+          selectedText +
+          "</span>" +
+          after;
+      }
+
+      function howToUse() {
+        var howToUse = document.getElementById("howToUse");
+
+        howToUse.innerHTML =
+          "<div class='bg-gray-200 max-w-sm rounded shadow-lg'><div class='px-6 py-4'><div class='font-bold text-xl mb-2'>How to use</div><p class='text-gray-700 text-base'>1. Write your title and note in the text area.<br>2. Click on the save button to save your note.<br>3. Click on the show button to show all your notes.<br>4. Click on the remove button to remove a note.<br>5. Click on the clear all button to clear all your notes.<br>6. Click on the edit button to edit a note.<br>7. Click on the bold button to make your text bold.<br>8. Click on the italic button to make your text italic.<br>9. Click on the underline button to make your text underline.<br>10. Click on the strike button to make your text strike.<br>11. Click on the code button to make your text code.<br>12. Click on the color button to make your text color.<br>13. Click on the how to use button to show this message.</p></div></div>";
+
+          if (howToUse.style.display === "none") {
+            howToUse.style.display = "block";
+          } else {
+            howToUse.style.display = "none";
+          }
+      }
+    </script>
+  </head>
+  <body onload="showAll()">
+    <div class="p-4 grid items-center justify-items-center content-center">
+      <div>
+        <h1 class="text-4xl font-bold text-center">Make Notes</h1>
+      </div>
+      <div class="grid gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="title" class="text-xl font-bold">Title</label>
+          <input
+            type="text"
+            id="title"
+            class="border-2 border-black p-2 rounded-lg focus:outline-none focus:bg-white focus:border-purple-500"
+            placeholder="e.g. My first note"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="note" class="text-xl font-bold">Note</label>
+          <textarea
+            name="note"
+            id="note"
+            cols="30"
+            rows="10"
+            class="border-2 border-black p-2 rounded-lg focus:outline-none focus:bg-white focus:border-purple-500"
+            placeholder="e.g. This is my first note"
+          ></textarea>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <button
+            onclick="save()"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Save
+          </button>
+          <button
+            onclick="remove()"
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Remove
+          </button>
+          <button
+            onclick="clearAll()"
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Clear All
+          </button>
+          <button
+            onclick="edit()"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Edit
+          </button>
+          <button
+            onclick="makeBold()"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Bold
+          </button>
+          <button
+            onclick="makeItalic()"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Italic
+          </button>
+          <button
+            onclick="makeUnderline()"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Underline
+          </button>
+          <button
+            onclick="makeStrike()"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Strike
+          </button>
+          <button
+            onclick="makeCode()"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Code
+          </button>
+          <select
+            name="color"
+            id="color"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded"
+            onchange="makeColor()"
+          >
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+            <option value="orange">Orange</option>
+            <option value="purple">Purple</option>
+            <option value="pink">Pink</option>
+            <option value="black">Black</option>
+            <option value="white">White</option>
+          </select>
+          <button
+            onmouseover="howToUse()"
+            class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+          >
+            How to use
+          </button>
+        </div>
+          <div id="howToUse"></div>
+        <div id="notes" class="grid grid-cols-2 gap-2"></div>
+      </div>
+    </div>
+    <footer class="bottom-0 w-full bg-gray-200 text-center text-md p-4">
+      <p>© Ankit Kumar| 2024</p>
+    </footer>
+  </body>
+</html>
